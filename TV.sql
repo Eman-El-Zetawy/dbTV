@@ -1,24 +1,26 @@
+ ----mysql db tv 
+ show databases ;
  create database tv ;
  use tv ; 
- 
+ ------create table actors
  CREATE TABLE `tv`.`actors` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`));
 
-
+------create table directors
 CREATE TABLE `tv`.`directors` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`));
 
-
+------create table series
   CREATE TABLE `tv`.`series` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`));
 
-
+------create table episodes
   CREATE TABLE `tv`.`episodes` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `e_num` VARCHAR(45) NOT NULL,
@@ -38,7 +40,7 @@ CREATE TABLE `tv`.`directors` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
-
+-------create table occasions
     CREATE TABLE `tv`.`occasions` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `date` DATE NULL,
@@ -52,7 +54,7 @@ CREATE TABLE `tv`.`directors` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
   
-
+-------create table series_actors
 CREATE TABLE `tv`.`series_actors` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `id_actor` INT UNSIGNED NOT NULL,
@@ -71,7 +73,7 @@ CREATE TABLE `tv`.`series_actors` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
-
+------insert actors 
 INSERT INTO `tv`.`actors` ( `name`) VALUES ( 'sara');
 INSERT INTO `tv`.`actors` (`name`) VALUES ('ali');
 INSERT INTO `tv`.`actors` (`name`) VALUES ('ahmad');
@@ -88,7 +90,7 @@ INSERT INTO `tv`.`actors`  (`name`) VALUES('salma') ;
 INSERT INTO `tv`.`actors`  (`name`)VALUES ('nour') ;
 INSERT INTO `tv`.`actors` (`name`) VALUES ('bertil bom');
 
-
+-------- insert directors
 INSERT INTO `tv`.`directors` (`name`) VALUES ('salm');
 INSERT INTO `tv`.`directors` (`name`) VALUES ('maher');
 INSERT INTO `tv`.`directors` (`name`) VALUES ('amr');
@@ -96,13 +98,14 @@ INSERT INTO `tv`.`directors` (`name`) VALUES ('khaled');
 INSERT INTO `tv`.`directors` (`name`) VALUES ('rami');
 INSERT INTO `tv`.`directors` (`name`) VALUES ('malak');
 
-
+-------insert series
 INSERT INTO `tv`.`series` (`name`) VALUES ('big sister');
 INSERT INTO `tv`.`series` (`name`) VALUES ('secren');
 INSERT INTO `tv`.`series` (`name`) VALUES ('baby day out');
 INSERT INTO `tv`.`series` (`name`) VALUES ('home alon');
 INSERT INTO `tv`.`series` (`name`) VALUES ('wild lies');
 
+-------------insert episodes
 
  INSERT INTO `tv`.`episodes` (`e_num`, `id_series`, `id_director`) VALUES ('e01', '1', '1');
 INSERT INTO `tv`.`episodes` (`e_num`, `id_series`, `id_director`) VALUES ('e02', '1', '2');
@@ -116,6 +119,7 @@ INSERT INTO `tv`.`episodes` (`e_num`, `id_series`, `id_director`) VALUES ('e01',
 INSERT INTO `tv`.`episodes` (`e_num`, `id_series`, `id_director`) VALUES ('e02', '4', '4');
 INSERT INTO `tv`.`episodes` (`e_num`, `id_series`, `id_director`) VALUES ('e03', '4', '5');
 
+------ insert series_actors
 
 INSERT INTO `tv`.`series_actors` (`id_actor`, `id_series`) VALUES ('1', '1');
 INSERT INTO `tv`.`series_actors` (`id_actor`, `id_series`) VALUES ('2', '1');
@@ -129,12 +133,12 @@ INSERT INTO `tv`.`series_actors` (`id_actor`, `id_series`) VALUES ('9', '3');
 INSERT INTO `tv`.`series_actors` (`id_actor`, `id_series`) VALUES ('10', '4');
 INSERT INTO `tv`.`series_actors` (`id_actor`, `id_series`) VALUES ('11', '4');
 
-
+------ insert occasions
 INSERT INTO `tv`.`occasions` (`name`, `id_episode`) VALUES ( 'day mother', '3');
 INSERT INTO `tv`.`occasions` ( `name`, `id_episode`) VALUES ( 'day indep', '5');
 INSERT INTO `tv`.`occasions` (`name`, `id_episode`) VALUES ( 'birthday', '7');
 
---Q1)
+--Q1)• Which actors play in the series Big Sister?
 SELECT e.name ,a.name FROM (
 ( tv.series_actors c
  inner join tv.actors e 
@@ -144,7 +148,7 @@ on c.id_series = a.id )
 where a.name = 'big sister';
 
 
----Q2) 
+---Q2) • In which series does the actor Bertil Bom participate?
 SELECT e.name ,a.name FROM (
 ( tv.series_actors c
  inner join tv.actors a 
@@ -153,7 +157,7 @@ inner join tv.series e
 on c.id_series = e.id 
 ) where a.name = 'bertil bom';
 
-----Q3)
+----Q3)• Which actors participate in more than one series?
 SELECT  count(c.id_series) as many_time  , e.name FROM (
 ( tv.series_actors c
  inner join tv.actors e 
@@ -164,7 +168,7 @@ on c.id_series = a.id
   having many_time >1 ;
 
 
-  ---Q4)
+  ---Q4)• How many times has the first episode of the series Wild Lies been transmitted? At what times?
 SELECT count(e.id) ,  c.name , e.e_num  , s.name  , c.date FROM(
  tv.episodes e
  inner join   tv.occasions  c
@@ -172,16 +176,17 @@ SELECT count(e.id) ,  c.name , e.e_num  , s.name  , c.date FROM(
  inner join tv.series s 
  on e.id_series = s.id 
  where s.name="wild lies" and e.e_num="e01"  ;
- ----Q5)
+ ----Q5)• How many directors are employed by the company?
 SELECT count(*) FROM tv.directors;
 ----or Q5)
 SELECT count(id) FROM tv.directors;
 
 
-------Q6)
+------Q6)• Which director has directed the greatest number of episodes?
 SELECT count(c.id) as m ,  e.name FROM (
  tv.episodes c
  inner join tv.directors e 
  on c.id_director = e.id
 ) group by(c.id_director)
 having  m>1 ; 
+ -------the end 
